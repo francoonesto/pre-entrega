@@ -11,12 +11,12 @@ export  class ProductManager {
 async addProduct(prod) {
     const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
     const existe = products.find(producto => producto.code === prod.code)
-    try{
-    if(existe)
+
+    if(existe){
         return false}
-    catch{
+    else{
         prod.id = ProductManager.aumentoId()
-        products.push(producto)
+        products.push(prod)
         await fs.writeFile(this.path , JSON.stringify(products))
         return true
     }}
@@ -27,11 +27,11 @@ const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
 return products
 }
 async getProductById (id) {
-    const products = JSON.parse(await fs.readFile(...this.path))
+    const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
     const prod = products.find(producto => producto.id === id)
     try {
     if (!prod)
-        throw Error(`Producto no existe`)
+        throw Error("Producto no existe")
     }
     catch{
     `Producto existente`

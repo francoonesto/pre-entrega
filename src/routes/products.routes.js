@@ -1,7 +1,7 @@
 import  { Router }  from 'express'
 import  { ProductManager }  from '../controllers/productManager.js'
 
-const prodManager = new ProductManager('src/models/productos.txt')
+const prodManager = new ProductManager('src/models/productos.json')
 
 const routerProd = Router()
 
@@ -14,7 +14,7 @@ res.status(200).send(productos)
 } )
 routerProd.get('/:id' , async(req,res) => {
     const {id} = req.params
-    const prods = await prodManager.getProductsById(parseInt(id))
+    const prods = await prodManager.getProductsById(id)
     if(prods)
     res.status(200).send(prods)
     else

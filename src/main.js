@@ -6,7 +6,7 @@ import routerCart from './routes/cart.routes.js'
 
 const PORT = 8080
 const app = express()
-const PATH = `productos.json`
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
