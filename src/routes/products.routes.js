@@ -14,32 +14,36 @@ res.status(200).send(productos)
 } )
 routerProd.get('/:id' , async(req,res) => {
     const {id} = req.params
-    const prods = await prodManager.getProductsById(id)
-    if(prods)
-    res.status(200).send(prods)
-    else
-    res.status(404).send("producto no existente")
+
+    try{
+        const prods = await prodManager.getProductById(id)
+        res.status(200).send(prods)}
+        catch(error){res.status(400).send(error.message)}
 })
+
 routerProd.post('/' , async(req,res) => {
-    const confirmacion = await prodManager.addProduct(req.body)
-    if(confirmacion)
-    res.status(200).send("Producto creado correctamente")
-    else
-    res.status(400).send("Producto ya existe")
+    try{
+        await prodManager.addProduct(req.body)
+        res.status(200).send("Producto creado correctamente")
+    }
+    catch(error){res.status(400).send(error.message)}
 })
+
 routerProd.put('/:id' , async(req,res) => {
-    const confirmacion = await prodManager.updateProduct(req.params.id , req.body)
-    if(confirmacion)
-    res.status(200).send("Producto actualizado correctamente")
-    else
-    res.status(404).send("Producto no encontrado")
+    try{
+    const {id} = req.params
+    await prodManager.updateProduct(id , req.body)
+    res.status(200).send("Producto actualizado")}
+    catch(error){res.status(400).send(error.message)}
 })
+
 routerProd.delete('/:id' , async(req,res) => {
-    const confirmacion = await prodManager.deleteProduct(req.params.id)
-    if(confirmacion)
-    res.status(200).send("Producto eliminado correctamente")
-    else
-    res.status(400).send("Producto no encontrado")
+const {id} = req.params
+
+    try{
+    await prodManager.deleteProduct(id)
+    res.status(200).send("Producto eliminado correctamente")}
+    catch(error){res.status(400).send(error.message)}
 })
 
 

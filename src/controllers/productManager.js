@@ -8,17 +8,21 @@ export  class ProductManager {
      this.path = path
     }
 
+    static aumentoId(){
+
+        return uuidv4()
+    }
+
 async addProduct(prod) {
     const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
     const existe = products.find(producto => producto.code === prod.code)
 
     if(existe){
-        return false}
+        throw new Error("Producto ya existe")}
     else{
         prod.id = ProductManager.aumentoId()
         products.push(prod)
         await fs.writeFile(this.path , JSON.stringify(products))
-        return true
     }}
 
 async getProducts() {
@@ -28,61 +32,39 @@ return products
 }
 async getProductById (id) {
     const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
-    const prod = products.find(producto => producto.id === id)
-    try {
-    if (!prod)
-        throw Error("Producto no existe")
+    const prod = products.find(prod => prod.id === id)
+
+if(!prod){
+    throw new Error(`Producto no encontrado`)
+}
+
+    return prod}
+
+async updateProduct (id , {title ,description,code,price,stock,category}){
+    const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
+    const indice = products.findIndex(product => product.id === id)
+
+    if (!indice) {
+throw new Error("Producto no existe")
     }
-    catch{
-    `Producto existente`
-    return prod}}
+    else{
+        products[indice].title = title
+        products[indice].description = description
+        products[indice].code = code
+        products[indice].price = price
+        products[indice].stock = stock
+        products[indice].category = category
 
-static aumentoId(){
-//     if(this.aumentarId){
-// this.aumentarId++
-//     }else{this.aumentarId = 1}
-    return uuidv4()
-// retorna un numero random?
+        await fs.writeFile(this.path , JSON.stringify(products))
+    }
+    }
+async deleteProduct(id) {
+    const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
+    const prods = products.find(pro => pro.id === id)
+    if(!prods)
+    {throw new Error("Producto no existe")}
+    else
+    {await fs.writeFile(this.path , JSON.stringify(products.filter(p => p.id != id )))}}
 }
 
-}
 
-const productManager = new ProductManager()
-// async getProductById (id) {
-//     const products = JSON.parse(await fs.readFile(...this.path))
-//     const prod = products.find(producto => producto.id === id)
-//     if (!prod) {
-//         throw Error("Producto no existe")
-//     }
-//     return prod
-//     }
-// async updateProduct (id, { title }){
-//     const products = JSON.parse(await fs.readFile(...this.path))
-//     const indice = products.findIndex(product => product.id === id)
-
-//     if (indice != -1) {
-//         products[indice].title = title
-//         await fs.writeFile(this.path[0] , JSON.stringify(products))
-//         console.log(products)
-//     } else {
-//         alert ("Producto no encontrado")
-//     }
-
-//  return indice
-// }
-
-// async deleteProduct(id) {
-//     const products = JSON.parse(await fs.readFile(...this.path))
-//     const prods = products.filter(pro => pro.id != id)
-//     await fs.writeFile(this.path[0] , JSON.stringify(prods))
-
-//     return prods
-// }
-
-
-// try {
-//     await getProductById("ProductoID")
-//  }catch(error){
-//      ("Producto no existente")
-//  console.error(error.message)
-//  }
