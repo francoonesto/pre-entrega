@@ -1,4 +1,3 @@
-import { json } from 'express'
 import { promises as fs } from  'fs'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -13,14 +12,14 @@ static aumentoId(){
     return uuidv4()
 }
 
-async crearCart(carrito) {
+async crearCart() {
     const cart = JSON.parse(await fs.readFile(this.path , 'utf-8'))
+    const existe = cart.find(e => e.id === cart.id)// hago esta validacion en el caso de querer varios cart
+    // const existe = cart.find(e => e.cart === cart.id)//hago esta validacion para crear un solo carrito
 
-    if(true){
-        carrito.id = CartManager.aumentoId()
-        cart.push(carrito)
-        await fs.writeFile(this.path,JSON.stringify(cart))
-    }
+    if(existe){ throw new Error ("Ya existe este carrito")}
+    else{cart.push({id: CartManager.aumentoId() , products:[]})
+         await fs.writeFile(this.path,JSON.stringify(cart))}
     }
 
     async cartById(id) {
@@ -33,45 +32,23 @@ async crearCart(carrito) {
 
     return existe}
 
-async addProductToCart(prod){
+    async cart(){
+        const cart = JSON.parse(await fs.readFile(this.path , 'utf-8'))
+
+        return cart
+    }
+
+async addProductToCart(id){
 const cart = JSON.parse(await fs.readFile(this.path , 'utf-8'))
-const addCart = cart.find(add => add.id != id)
+const addCart = cart.findIndex(add => add.id === id)
 
 if(addCart){
-    throw new Error("Producto no encontrado")
-} else{
-    prod.id = CartManager.aumentoId()
-    addCart.productos.push(prod)
-    const cantidad = productos.find(c => c.pid === prod.id)
-    if (cantidad){
-        return cart.reduce((acum , item ) => acum += item.cantidad + 1 , 0)
-    }
-    await fs.writeFile(this.path,JSON.stringify(cart))
-}
-}
-
+        const crear = cart[addCart].products.push({productid: CartManager.aumentoId() , quantity:1})
+        return await fs.writeFile(this.path,JSON.stringify(crear))}
+else{
+       const buscar = cart[addCart].products.push({...quantity + 1 })
+       return await fs.writeFile(this.path,JSON.stringify(buscar))}
     }
 
-// async cartById(id) {
-//     const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
-//     const existe = products.find(existe => existe.id === id)
-
-//     if(!existe){
-//      throw new Error("Producto no encontrado")
-//     }
-
-//     return existe}
-
-    // async addCart(prod) {
-    //     const products = JSON.parse(await fs.readFile(this.path , 'utf-8'))
-    //     const cart = products.find(c => c.productos === prod.productos)
-
-    //     if(cart){
-    //         throw new Error("Producto ya existente")
-    //     }
-    //     else{
-    //         prod.id = CartManager.aumentoId()
-    //         products.push(prod)
-    //         await fs.writeFile(this.path , JSON.stringify(products))
-    //     }}
+    }
 

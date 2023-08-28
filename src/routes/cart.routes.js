@@ -6,27 +6,37 @@ const cartManager = new CartManager('src/models/carrito.json')
 const routerCart = Router()
 
 routerCart.post('/' , async (req,res) =>{
-        await cartManager.crearCart(req.body)
-        res.status(200).send("cart creado")})
+
+    try{
+        await cartManager.crearCart()
+        res.status(200).send("cart creado")}
+    catch(error){res.status(400).send(error.message)}
+})
+
+routerCart.get('/' , async (req,res) => {
+
+    const cart = await cartManager.cart()
+
+    res.status(200).send(cart)
+
+})
+
 routerCart.get('/:cid' , async (req,res) => {
-    const {cid} = req.params
+        const {cid} = req.params
 
-    try{
-        const cart = await cartManager.cartById(cid)
-        res.status(200).send(cart)
-    }
-    catch(error){res.status(400).send(error.message)}
-})
-routerCart.post('/:cid/product/:pid' , async (req,res) =>{
-const {cid} = req.params
-const {product} = req.body
-const {pid} = req.params
+        try{
+            const cart = await cartManager.cartById(cid)
+            res.status(200).send(cart)
+        }
+        catch(error){res.status(400).send(error.message)}
+    })
 
-    try{
-        await cartManager.addProductToCart(cid , product , pid)
-        res.status(200).send("Producto agregado correctamente")
-    }
-    catch(error){res.status(400).send(error.message)}
-})
+    routerCart.post('/:cid/product/:pid' , async (req,res) =>{
+
+ try{
+     await cartManager.addProductToCart()
+     res.status(200).send("Producto agregado correctamente")}
+catch{
+    res.status(400).send("Producto no encontrado")}})
 
 export default routerCart
