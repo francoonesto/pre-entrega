@@ -9,8 +9,8 @@ routerCart.post('/' , async (req,res) =>{
 
     try{
         await cartManager.crearCart()
-        res.status(200).send("cart creado")}
-    catch(error){res.status(400).send(error.message)}
+        res.status(200).send("Cart creado")}
+    catch{res.status(400).send("No pudo crearse")}
 })
 
 routerCart.get('/' , async (req,res) => {
@@ -22,9 +22,8 @@ routerCart.get('/' , async (req,res) => {
 })
 
 routerCart.get('/:cid' , async (req,res) => {
-        const {cid} = req.params
-
         try{
+            const {cid} = req.params
             const cart = await cartManager.cartById(cid)
             res.status(200).send(cart)
         }
@@ -33,10 +32,7 @@ routerCart.get('/:cid' , async (req,res) => {
 
     routerCart.post('/:cid/product/:pid' , async (req,res) =>{
 
- try{
-     await cartManager.addProductToCart()
-     res.status(200).send("Producto agregado correctamente")}
-catch{
-    res.status(400).send("Producto no encontrado")}})
+     cartManager.addProductToCart(req.params.cid , req.params.pid)
+     res.status(200).send("creado")})
 
 export default routerCart

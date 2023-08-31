@@ -14,12 +14,11 @@ static aumentoId(){
 
 async crearCart() {
     const cart = JSON.parse(await fs.readFile(this.path , 'utf-8'))
-    const existe = cart.find(e => e.id === cart.id)// hago esta validacion en el caso de querer varios cart
-    // const existe = cart.find(e => e.cart === cart.id)//hago esta validacion para crear un solo carrito
 
-    if(existe){ throw new Error ("Ya existe este carrito")}
-    else{cart.push({id: CartManager.aumentoId() , products:[]})
-         await fs.writeFile(this.path,JSON.stringify(cart))}
+   const crear = cart.push({id: CartManager.aumentoId() , products:[]})
+         await fs.writeFile(this.path,JSON.stringify(cart))
+
+    return crear
     }
 
     async cartById(id) {
@@ -38,17 +37,34 @@ async crearCart() {
         return cart
     }
 
-async addProductToCart(id){
-const cart = JSON.parse(await fs.readFile(this.path , 'utf-8'))
-const addCart = cart.findIndex(add => add.id === id)
+async addProductToCart(cid , pid){
+    const carts =JSON.parse(await fs.readFile(this.path , 'utf-8'))
+    const carrito = carts.find(c => c.id === cid)
+    const products = carrito.products
+    const productCart = products.find(products => products.productid === pid)
 
-if(addCart){
-        const crear = cart[addCart].products.push({productid: CartManager.aumentoId() , quantity:1})
-        return await fs.writeFile(this.path,JSON.stringify(crear))}
-else{
-       const buscar = cart[addCart].products.push({...quantity + 1 })
-       return await fs.writeFile(this.path,JSON.stringify(buscar))}
+    if(!productCart){
+        products.push({productid:CartManager.aumentoId() , quantity : 1})
+        await fs.writeFile(this.path , JSON.stringify(carts))
+    }else{
+        products[0].quantity++
+        await fs.writeFile(this.path , JSON.stringify(carts))
     }
+    }}
 
-    }
 
+        // const carts = JSON.parse(await fs.readFile(this.path , 'utf-8'))
+        // const carritoEncontrado = carts.find(c => c.id === cid)
+        // const indiceCart = carts.findIndex(i => i.id === cid)
+        // const products = carritoEncontrado.products
+        // const productId = products.find(p => p.productid === pid)
+        // const prodEncontrado = products.findIndex(p => p.productid === pid)
+
+
+        // if(carritoEncontrado === cid && productId === pid){
+        //     carts[prodEncontrado].products.quantity++
+        //     await fs.writeFile(this.path , JSON.stringify(carts))
+        // }else{
+        //     carts[indiceCart].products.push({productid:CartManager.aumentoId() , quantity : 1})
+        //     await fs.writeFile(this.path , JSON.stringify(carts))
+        // }
