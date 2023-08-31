@@ -31,8 +31,10 @@ routerCart.get('/:cid' , async (req,res) => {
     })
 
     routerCart.post('/:cid/product/:pid' , async (req,res) =>{
-
-     cartManager.addProductToCart(req.params.cid , req.params.pid)
-     res.status(200).send("creado")})
+try{
+     await cartManager.addProductToCart(req.params.cid , req.params.pid)
+     res.status(200).send("creado")}
+    catch(error){res.status(400).send(error.message)}
+    })
 
 export default routerCart
